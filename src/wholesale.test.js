@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {calculateOrder,validateInquiry,whatsappUrl,inquiryMessage} from './wholesale.js';
+const valid={business:'Test & Store',owner:'Owner',location:'Pokhara',outlet:'Local Grocery',crates:10,phone:'+977 9848951422',consent:true,request:'Sample stock'};
+test('calculates configured trade totals without inventing default prices',()=>{assert.deepEqual(calculateOrder(5),{crates:5,cans:null,total:null});assert.deepEqual(calculateOrder(10,{cansPerCrate:24,pricePerCrateNpr:2000}),{crates:10,cans:240,total:20000});assert.throws(()=>calculateOrder(0));assert.throws(()=>calculateOrder(51));});
+test('validates local and international Nepali mobile numbers',()=>{assert.deepEqual(validateInquiry(valid),{});assert.deepEqual(validateInquiry({...valid,phone:'9848951422'}),{});assert.ok(validateInquiry({...valid,phone:'123'}).phone);assert.ok(validateInquiry({...valid,business:' ',consent:false}).business);assert.ok(validateInquiry({...valid,consent:false}).consent);});
+test('encodes retailer contact details for WhatsApp without order quantities',()=>{const form={...valid,crates:50};const url=new URL(whatsappUrl(form));assert.equal(url.pathname,'/9779848951422');assert.ok(!inquiryMessage(form).includes('crates'));assert.equal(url.searchParams.get('text'),inquiryMessage(form));for(const value of ['Test & Store','Owner','Pokhara','Local Grocery','Sample stock','+977 9848951422']) assert.ok(url.searchParams.get('text').includes(value));});

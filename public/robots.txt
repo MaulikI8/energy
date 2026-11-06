@@ -1,0 +1,5 @@
+# Private preview. Enable crawling when the owner makes the site public.
+User-agent: *
+Disallow: /
+
+Sitemap: https://energy-nepal-original-surge.famedchili.chatgpt.site/sitemap.xml

@@ -1,0 +1,11 @@
+import React, { useState } from 'react';
+const info = [
+ {title:'Retailers',intro:'Make room for the black can.',copy:'Tell us what kind of shop you run and where it is. Ask about the first release, opening stock and the details you need before putting ENERGY on your shelves.',items:['Opening stock and case quantities','Trade pricing','Shelf life and product details','Payment and delivery']},
+ {title:'Samples',intro:'Try it before you stock it.',copy:'Interested in tasting Original? Choose Samples in the form and send us your details. We will get back to you about availability, quantities and how a sample can be arranged.',items:['Sample availability','Quantities and any costs','Collection or delivery','Label and product information']},
+ {title:'Distributors',intro:'Bring ENERGY to your customers.',copy:'Tell us the areas you cover and the outlets you supply. We will discuss the first release and what supplying ENERGY could look like for your business.',items:['Areas you cover','Outlets you supply','Stock requirements','Trade and supply terms']}
+];
+export default function TradeInformation() {
+ const [active,setActive]=useState(0),current=info[active];
+ function keyboard(event,index) { let next;if(event.key==='ArrowRight')next=(index+1)%info.length;if(event.key==='ArrowLeft')next=(index+info.length-1)%info.length;if(event.key==='Home')next=0;if(event.key==='End')next=info.length-1;if(next!==undefined){event.preventDefault();setActive(next);document.getElementById(`trade-tab-${next}`)?.focus();} }
+ return <div className="trade-information"><div className="trade-tabs" role="tablist" aria-label="Business information">{info.map((item,i)=><button type="button" key={item.title} id={`trade-tab-${i}`} role="tab" aria-controls={`trade-panel-${i}`} aria-selected={active===i} tabIndex={active===i?0:-1} onClick={()=>setActive(i)} onKeyDown={e=>keyboard(e,i)}>{item.title}</button>)}</div><div className="trade-info-panel" id={`trade-panel-${active}`} role="tabpanel" aria-labelledby={`trade-tab-${active}`} tabIndex={0}><p className="trade-intro">{current.intro}</p><p>{current.copy}</p><h3>Details to discuss</h3><ul>{current.items.map(item=><li key={item}>{item}</li>)}</ul></div></div>;
+}
